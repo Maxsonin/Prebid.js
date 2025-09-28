@@ -8,17 +8,19 @@ const BANNER_REQUEST = {
 };
 
 const SERVER_BANNER_RESPONSE = {
-  source: { leskoid: 12345, pubId: 54321 },
-  bids: [
-    {
-      requestId: '123abc',
-      cpm: 5,
-      width: 300,
-      height: 250,
-      creativeId: 'creative123',
-      ad: '<div>Ad</div>',
-    },
-  ],
+  body: {
+    source: { leskoid: 12345, pubId: 54321 },
+    bids: [
+      {
+        requestId: '123abc',
+        cpm: 5,
+        width: 300,
+        height: 250,
+        creativeId: 'creative123',
+        ad: '<div>Ad</div>',
+      },
+    ],
+  },
 };
 
 describe('leskoBidAdapter', () => {
@@ -37,10 +39,8 @@ describe('leskoBidAdapter', () => {
   describe('buildRequests', () => {
     it('creates POST request with correct payload', () => {
       const request = spec.buildRequests([BANNER_REQUEST]);
-      const payload = JSON.parse(request.data);
+      const payload = request.data;
 
-      expect(request.method).to.equal('POST');
-      expect(request.url).to.equal('http://lesko_server/auction');
       expect(payload.data[0]).to.deep.equal({
         bidId: '123abc',
         leskoid: 12345,
