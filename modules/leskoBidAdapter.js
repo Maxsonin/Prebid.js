@@ -9,7 +9,7 @@ import { deepAccess, isArray } from "../src/utils.js";
  * @typedef {import('../src/adapters/bidderFactory.js').ServerRequest} ServerRequest
  */
 
-const AUCTION_PATH = "http://lesko_server/auction";
+const AUCTION_PATH = "https://intern-project-server-production.up.railway.app/leskoAuction";
 const BIDDER_CODE = "lesko";
 
 export const spec = {
@@ -44,7 +44,10 @@ export const spec = {
     return {
       method: 'POST',
       url: AUCTION_PATH,
-      data: JSON.stringify(payload)
+      data: payload,
+      options: {
+        contentType: 'application/json'
+      }
     };
   },
 
@@ -55,12 +58,11 @@ export const spec = {
    * @return {Bid[]} An array of bids which were nested inside the server.
    */
   interpretResponse: function(serverResponse) {
-    const isEmptyResponse = !serverResponse || !isArray(serverResponse.bids);
-    if (isEmptyResponse) {
+    if (!serverResponse || !isArray(serverResponse.body?.bids)) {
       return [];
     }
 
-    return serverResponse.bids
+    return serverResponse.body.bids
       .filter(bid => bid && bid.requestId && bid.cpm)
       .map(bid => ({
         requestId: bid.requestId,
